@@ -1,0 +1,11 @@
+[
+ {
+     "id": "0",
+     "nom":"soumi",
+     "age":5,
+     "email": "soumichan55@gmail.com",
+     "password":"password",
+     "avatar":"assets/img/img_10.png"
+ }
+
+]

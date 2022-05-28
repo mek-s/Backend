@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "780200934923",
+    "project_id": "lastchance-be8f2",
+    "storage_bucket": "lastchance-be8f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780200934923:android:a992089ba105b94280d10e",
+        "android_client_info": {
+          "package_name": "com.firebase.hummy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780200934923-25a72q3nthc7eqmr2kb1pvcskdiu3liv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4dDMWmN1-CADV1XeyM1weYlv5b6AWgUU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "780200934923-25a72q3nthc7eqmr2kb1pvcskdiu3liv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
