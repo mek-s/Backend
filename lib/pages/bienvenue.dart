@@ -29,7 +29,7 @@ class _BienvenueState extends State<Bienvenue> {
  
  // ignore: non_constant_identifier_names
  Future<String> GetName() async{
-  String nom ='';
+  String nom ='Salim';
   final  prefs = await SharedPreferences.getInstance()  ;
   final token = prefs.getString('userID');
   final firestore = FirebaseFirestore.instance;
@@ -53,6 +53,19 @@ class _BienvenueState extends State<Bienvenue> {
   @override
   Widget build(BuildContext context) {
      DocumentReference userref = FirebaseFirestore.instance.collection("users").doc('biUDvwQiEXRq5HW6VPlTA1gWQXZ2');
+     GetName().then((value){
+       print('!!!!!!!!!!!!!!!!!!!!!!!!!!');
+       print(value);
+       print('!!!!!!!!!!!!!!!!!!!!!!!!!!');
+     }).catchError((onError){
+       print('0000000000000000000');
+       print(onError.toString());
+       print('0000000000000000000');
+     }
+     
+     );
+     
+
     return   Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar
@@ -143,7 +156,38 @@ class _BienvenueState extends State<Bienvenue> {
                     const SizedBox(height: 250),
                     Title(
                       color: Colors.blueAccent,
-                     child: 
+                     child: Text(
+                           '\tBienvenue \n \t\t\t $value',
+                            style:  const TextStyle(
+                              fontFamily: 'FredokaOne',
+                              fontSize: 49, 
+                              color:  Color( 0xff010158), 
+                            ),
+                          ),
+                    //   FutureBuilder <String?> (
+                    //    future: GetName(),
+                    //    builder: (context, snapshot) {
+                    //       if( snapshot.hasData ){
+                    //       String name = snapshot.data!;
+                    //       print(' freaking name $name');
+                    //       print('Hhhhhhhh Its a joke');
+                    //       return Text(
+                    //        '\tBienvenue \n \t\t\t $name',
+                    //         style:  const TextStyle(
+                    //           fontFamily: 'FredokaOne',
+                    //           fontSize: 49, 
+                    //           color:  Color( 0xff010158), 
+                    //         ),
+                    //       );
+                    //     }
+                    //     if(snapshot.hasError){
+                    //       return Text('error');
+                    //     }
+                    //         return Text('Loading...');
+                        
+                        
+                    //    },
+                    //  ),
                     //  FutureBuilder(
                     //    future: fetch(context),
                     //    builder:(context, snapshot){
@@ -169,24 +213,7 @@ class _BienvenueState extends State<Bienvenue> {
                     //      return const CircularProgressIndicator();
                     //    },
                     //  ),
-                     FutureBuilder <String?> (
-                       future: GetName(),
-                       builder: (context, snapshot) {
-                          if( snapshot.hasData ){
-                          String name = snapshot.data!;
-                          print(name);
-                          return Text(
-                           '\tBienvenue \n \t\t\t $name',
-                            style:  const TextStyle(
-                              fontFamily: 'FredokaOne',
-                              fontSize: 49, 
-                              color:  Color( 0xff010158), 
-                            ),
-                          );
-                        }
-                        return Text('error');
-                       }
-                     ),
+                    
              
                     //    },
                     //  ),
