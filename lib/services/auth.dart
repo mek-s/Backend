@@ -1,4 +1,4 @@
-import 'dart:js';
+
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +14,7 @@ class AuthController extends GetxController {
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
 final TextEditingController nameController = TextEditingController();
-  int ageController =4 ;
+final TextEditingController ageController = TextEditingController() ;
 // login text controllers
 final TextEditingController loginemailController = TextEditingController();
 final TextEditingController loginpasswordController = TextEditingController();
@@ -24,16 +24,19 @@ final TextEditingController loginpasswordController = TextEditingController();
 
 // sign up function
 Future<void> SignUp() async{
+  
   final user = await _auth.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
   final firestore = FirebaseFirestore.instance;
   firestore.collection('users').doc(user.user!.uid).set(
-     {"email": emailController.text, "password": passwordController.text, "age":ageController, "nom":nameController.text}
+     {"email": emailController.text, "password": passwordController.text, "age":ageController.text, "nom":nameController.text}
   );
   if(user != null){
     
     print('signed up succesfully !');
      SharedPreferences prefs = await SharedPreferences.getInstance();
-     prefs.setString("userID", user.user!.uid);
+    prefs.setString("userID", user.user!.uid);
+    prefs.setString("name", nameController.text);
+    prefs.setString("age", ageController.text);
     Get.to( Avatars());
   }else {
     print('error');
@@ -58,10 +61,27 @@ Future<void> SignIn() async {
 
 // sign out 
 Future<void> SignOut() async{
+ 
   await _auth.signOut();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.clear();
+  print('signed out succesfuly !');
   Get.offAll(Principal());
+ 
 }
+  //supprimer un utilisateur de la base de donnée 
+   Future<void> Supprimer () async{
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+     final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+     final uid= prefs.getString("userId");
+     await usersCollection
+     .doc(uid)
+     .delete()
+     .then(
+       (value) => { print('user deleted!') }
+      ).whenComplete(() => {Get.offAll(Principal())})
+     .catchError((error) => print('Failed to delete user'));
+    
+   }
+} 
 
-}

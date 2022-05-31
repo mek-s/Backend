@@ -3,8 +3,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hummy/pages/bienvenue.dart';
+import 'package:hummy/pages/modifierProfile.dart';
 import 'package:hummy/pages/themes.dart';
 import 'package:hummy/services/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EspcPrent extends StatefulWidget {
   const EspcPrent({ Key? key }) : super(key: key);
@@ -14,16 +17,107 @@ class EspcPrent extends StatefulWidget {
 }
 
 class _EspcPrentState extends State<EspcPrent> {
-  AuthController authcontroller = AuthController();
-  
+
+  // recuperer le nom de l'utilisateur 
+ Future<String> getName() async {
+  late String name ='' ;
+  final  prefs = await SharedPreferences.getInstance()  ;
+  final token = prefs.getString('userID');
+ 
+  final firestore = FirebaseFirestore.instance;
+    DocumentSnapshot data  = await firestore
+    .collection('users')
+    .doc(token)
+    .get()
+    .catchError((onError){
+      print('this error is from catch error'+ onError.toString());
+    });
+     print(data.data());
+      name = data['name'];
+     print('nom:$name');
+    print('ID nom :$token');
+
+     return name;
+ }
+
+
+ // recuperer l'avatar de l'utilisateur 
+Future<String> getAvatar() async {
+  late String avatar ='' ;
+  final  prefs = await SharedPreferences.getInstance()  ;
+  final token = prefs.getString('userID');
+ 
+  final firestore = FirebaseFirestore.instance;
+    DocumentSnapshot data  = await firestore
+    .collection('users')
+    .doc(token)
+    .get()
+    .catchError((onError){
+      print('this error is from catch error'+ onError.toString());
+    });
+     print(data.data());
+    avatar = data['avatar'];
+     print('nom:$avatar');
+    print('ID nom :$token');
+
+     return avatar;
+ }
+
+   // instance of auth controller 
+   AuthController authcontroller = AuthController();
   String _themes =' Petit \n dejeuner';
   
-  int  _Niv =10;
+  int  _Niv =1;
   int _Quest=3;
   int _Score=40;
   int _rang=2;
+
+@override
+  initState() {
+    super.initState();
+    getName();
+    getAvatar();
+   // loadMusic();
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    String name='';
+    FutureBuilder <String?> (
+                       future: getName(),
+                       builder: (context, snapshot) {
+                          if( snapshot.hasData ){
+                          name = snapshot.data!;
+                          
+                          return Text(name) ;
+                          }
+                        if(snapshot.hasError){
+                          return Text('error');
+                       
+                         }
+                          return Text('Loading...');
+                       },
+                     );
+    String avatar='';
+    FutureBuilder<String?> (
+              future: getAvatar(),
+              builder: (context, snapshot)
+              {
+                if(snapshot.hasData){
+                     avatar = snapshot.data!; 
+                      return Image.asset(avatar, width: 75);
+                        
+                  }
+                  if(snapshot.hasError){
+                    return Text('error');
+                  }
+              
+                return Image.asset("assets/img/img_19.png", width: 75);
+                
+              },
+            );
+   
     return Scaffold(
       extendBodyBehindAppBar: true,
  appBar: AppBar(
@@ -68,15 +162,16 @@ const SizedBox(height: 40),
   Column(  mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children:  [ 
    
-         const CircleAvatar(
+      CircleAvatar(
                           radius :52,
-                          // foregroundImage: ,
-                          backgroundImage: AssetImage("assets/img/img.png"),
-                        ),
-                        const SizedBox(height: 15), 
-       const Text('Ahmed',style: const TextStyle(color:  Color(
+                          backgroundImage: AssetImage(avatar),
+                 ),
+      const SizedBox(height: 15), 
+        
+        Text(name,style: TextStyle(color:  Color(
                         0xff010158),fontSize: 35),textAlign: TextAlign.center),
-                   const SizedBox(height: 15), 
+            
+        const SizedBox(height: 15), 
    Row( mainAxisAlignment: MainAxisAlignment.spaceEvenly,
   children : [  Column(
              mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -176,7 +271,7 @@ const SizedBox(height: 40),
                             ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(horizontal: 42, vertical: 20),
                                 animationDuration: const Duration(milliseconds: 100),
-                             fixedSize: const Size(150, 60),
+                            // fixedSize: const Size(150, 60),
                                 primary:const Color.fromARGB(255, 219, 212, 212) ,
                                 shadowColor: Colors.black87 ,
                                 shape: RoundedRectangleBorder(
@@ -208,7 +303,10 @@ const SizedBox(height: 40),
                                 elevation: 20
                             ), ),
  const SizedBox(height: 11.5), 
-   ElevatedButton.icon(onPressed: (){}, icon:const Icon(CupertinoIcons.pencil_ellipsis_rectangle,color : Colors.black,size: 50,), label: const Text('Modifier le profil',style: TextStyle(color:  Color(
+   ElevatedButton.icon(onPressed: (){  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Modifier()));//espace parent
+}, icon:const Icon(CupertinoIcons.pencil_ellipsis_rectangle,color : Colors.black,size: 50,), label: const Text('Modifier le profil',style: TextStyle(color:  Color(
                         0xff010158),fontSize: 26),textAlign: TextAlign.center), style :ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 42, vertical: 20),
                             animationDuration: const Duration(milliseconds: 100),
@@ -221,71 +319,9 @@ const SizedBox(height: 40),
 
                             ),
                             elevation: 20
-                        ), )
-//                       ElevatedButton(onPressed: (){
-//               //popup window
-//               //showDialog(context: context, builder: builder)
-//                         },
-//                         child: 
-//                         Container(
-//                           padding: EdgeInsets.all(15.0),
-//                           width: 800,
-//                           height:70,
-// decoration: new BoxDecoration(
-//  //shape: BoxShape.rectangle,
-//   borderRadius: BorderRadius.circular(50),
-//   gradient: new LinearGradient(colors: [Color.fromARGB(122, 255, 193, 7),Color.fromARGB(179, 255, 81, 0)  ])
-// ),
-//          child:  const Text('Modifier le profil',style: TextStyle(color:  Color(
-//                         0xff010158),fontSize: 30),textAlign: TextAlign.center),
-//                                     )  ,    style:
-//                         ElevatedButton.styleFrom(
-//                             padding: const EdgeInsets.symmetric(horizontal: 42, vertical: 20),
-//                             animationDuration: const Duration(milliseconds: 100),
-//                            //fixedSize: const Size(340, 70),
-                           
-//                             primary:   Colors.transparent,
-//                             shadowColor: Colors.black12 ,
-//                             shape: RoundedRectangleBorder(
-//                               borderRadius: BorderRadius.circular(75),
-
-//                             ),
-//                             elevation: 20
-//                         ),),
-
-  
-//                            const SizedBox(height: 2.5),
-//                       ElevatedButton(onPressed: (){   // Navigator.push(
-//                         // context,
-//                         // MaterialPageRoute(builder: (context) =>  const Themes()), );
-//                         },
-
-//                         child:
-//                         Container(
-//                         padding: EdgeInsets.all(15.0),
-//                           width: 800,
-//                           height:70,
-// decoration: new BoxDecoration(
-//  //shape: BoxShape.rectangle,
-//   borderRadius: BorderRadius.circular(50),
-//   gradient: new LinearGradient(colors: [Color.fromARGB(255, 242, 247, 248),Color.fromARGB(179, 255, 81, 0) ])
-// ),
-// child:  const Text('supprimer le compte',style: TextStyle(color: Color(
-//                         0xff010158),fontSize: 30),textAlign: TextAlign.center),),
-//                         style:
-//                         ElevatedButton.styleFrom(
-//                             padding: const EdgeInsets.symmetric(horizontal: 42, vertical: 20),
-//                             animationDuration: const Duration(milliseconds: 100),
-//                            //fixedSize: const Size(340, 70),
-//                             primary:Colors.transparent ,
-//                             shadowColor: Colors.black12 ,
-//                             shape: RoundedRectangleBorder(
-//                               borderRadius: BorderRadius.circular(75),
-
-//                             ),
-//                             elevation: 20
-//                         ),),
- ,const SizedBox(height: 11.5),
+                        ), ),
+                         
+                         const SizedBox(height: 11.5),
  ElevatedButton.icon(onPressed: (){  showDialog(
    
         context: context,
@@ -299,7 +335,9 @@ const SizedBox(height: 40),
           actions: [
             Row( mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(onPressed: (){/*Dconnexion*/}, child: const Text('Oui',style: TextStyle(color:  Color(
+                ElevatedButton(
+                  onPressed: (){ authcontroller.SignOut(); },
+                 child: const Text('Oui',style: TextStyle(color:  Color(
                             0xff010158),fontSize: 18),textAlign: TextAlign.center),
                                 
                                 style:
@@ -370,7 +408,7 @@ const SizedBox(height: 40),
           actions: [
             Row( mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(onPressed: (){/**supp */}, child: const Text('Oui',style: TextStyle(color:  Color(
+                ElevatedButton(onPressed: (){authcontroller.Supprimer();}, child: const Text('Oui',style: TextStyle(color:  Color(
                             0xff010158),fontSize: 18),textAlign: TextAlign.center),
                                 
                                 style:
@@ -408,11 +446,11 @@ const SizedBox(height: 40),
           ],
         ));
                            }, icon:const Icon(CupertinoIcons.trash,color : Colors.black,size: 40,), label: const Text('Supprimer le compte',style: TextStyle(color:  Color(
-                        0xff010158),fontSize: 25.5),textAlign: TextAlign.center),
+                        0xff010158),fontSize: 24.2),textAlign: TextAlign.center),
                          style :ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 42, vertical: 20),
                             animationDuration: const Duration(milliseconds: 100),
-                                 fixedSize: const Size(385, 75),
+                                // fixedSize: const Size(385, 75),
                             primary:const Color(0xffffff4d7),
                             shadowColor: const Color(
                         0xff010158) ,
@@ -422,24 +460,7 @@ const SizedBox(height: 40),
                             ),
                             elevation: 20
                         ), )
-                      // ElevatedButton(onPressed: (){   // Navigator.push(
-                      //   // context,
-                      //   // MaterialPageRoute(builder: (context) =>  const Themes()), );
-                      //   },
-                      //   child: const Text('Se déconnecter',style: TextStyle(color:Color.fromARGB(255, 255, 0, 0),fontSize: 20),textAlign: TextAlign.center),
-                      //   style:
-                      //   ElevatedButton.styleFrom(
-                      //       padding: const EdgeInsets.symmetric(horizontal: 42, vertical: 20),
-                      //       animationDuration: const Duration(milliseconds: 100),
-                      //    fixedSize: const Size(860, 60),
-                      //       primary:Colors.white70 ,
-                      //       shadowColor: Colors.black12 ,
-                      //       shape: RoundedRectangleBorder(
-                      //         borderRadius: BorderRadius.circular(75),
-
-                      //       ),
-                      //       elevation: 20
-                      //   ),),
+                   
 
     , const SizedBox(height: 16),
 ],
@@ -447,6 +468,6 @@ const SizedBox(height: 40),
 
 ),
 
-    );
+);
   }
 }

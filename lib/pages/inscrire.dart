@@ -116,8 +116,8 @@ class _InscrireState extends State<Inscrire> {
       autofocus: false,
       // controller: Age,
       style: nada,
-      keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter> [FilteringTextInputFormatter.digitsOnly],
+      keyboardType: TextInputType.text,
+     // inputFormatters: <TextInputFormatter> [FilteringTextInputFormatter.digitsOnly],
       textInputAction: TextInputAction.next,
       validator: (value) {
         if (value!.isEmpty) {
@@ -131,7 +131,7 @@ class _InscrireState extends State<Inscrire> {
         return null;
       },
       onSaved: (value) {
-       authcontroller.ageController = int.parse(value!);
+       authcontroller.ageController.text =value!;
       },
       decoration: InputDecoration(
                                     contentPadding: const EdgeInsets.symmetric(

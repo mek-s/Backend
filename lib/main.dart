@@ -2,10 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hummy/firebase_options.dart';
 import 'package:get/get.dart';
-import 'package:hummy/pages/dejeuner.dart';
-import 'package:hummy/pages/diner.dart';
+// import 'package:hummy/pages/dejeuner.dart';
+// import 'package:hummy/pages/diner.dart';
 import 'package:hummy/pages/inscrire.dart';
-import 'package:hummy/pages/petitdejeuner.dart';
+// import 'package:hummy/pages/petitdejeuner.dart';
 import 'package:hummy/pages/principal.dart';
 import 'package:hummy/pages/seconnecter.dart';
 import 'package:hummy/pages/themes.dart';
@@ -64,9 +64,9 @@ class _MyAppState extends State<MyApp> {
         '/': (context) => Principal(), //AKA push inscrire et seconnecter
         '/Inscrire': (context) => Inscrire(),
         '/Seconnecter': (context) => Seconnecter(),
-        '/petitDejeuner': (context) => PetitDejeuner(),
-        '/Dejeuner': (context) => Dejeuner(),
-        '/Diner': (context) => Diner(),
+      //  '/petitDejeuner': (context) => PetitDejeuner(),
+        // '/Dejeuner': (context) => Dejeuner(),
+        // '/Diner': (context) => Diner(),
         '/bienvenue': (context) => Bienvenue(),
         '/avatars': (context) => Avatars(),
         '/theme': (context) => Themes(),

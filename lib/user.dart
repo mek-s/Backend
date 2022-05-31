@@ -9,7 +9,11 @@ List<User> userFromJson(String str) => List<User>.from(json.decode(str).map((x) 
 String userToJson(List<User> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class User {
-
+  
+//  Future<List<User>> fetch (BuildContext context) async {
+//     final jsonstring = await DefaultAssetBundle.of(context).loadString('users.json');
+//     return userFromJson(jsonstring);
+//   }
     String id;
     String nom;
     int age;

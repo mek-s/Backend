@@ -19,7 +19,7 @@ class _BienvenueState extends State<Bienvenue> {
      @override
       void initState() {
         super.initState();
-         GetName();
+        GetName();
       }
 
   Future<List<User>> fetch (BuildContext context) async {
@@ -28,22 +28,46 @@ class _BienvenueState extends State<Bienvenue> {
   }
  
  // ignore: non_constant_identifier_names
- Future<String> GetName() async{
-  String nom ='Salim';
+ Future<String?> GetName() async{
+  //  late String nom ='Salim' ;
+  // final  prefs = await SharedPreferences.getInstance()  ;
+  // final token = prefs.getString('userID');
+ 
+  // final firestore = FirebaseFirestore.instance;
+  // final name = await firestore.collection('users').doc('biUDvwQiEXRq5HW6VPlTA1gWQXZ2')
+  // .get().then((DocumentSnapshot doc){
+  //   print('I entered get then');
+  //   // final data = doc.data() as Map<String, dynamic> ;
+  //   nom = doc['nom'];
+  //    print('nom:$nom');
+  //   print('ID nom :$token');
+  //  } 
+  // );
+  // return nom;
+  late String nom ='Salim' ;
   final  prefs = await SharedPreferences.getInstance()  ;
   final token = prefs.getString('userID');
+ 
   final firestore = FirebaseFirestore.instance;
-  firestore.collection('users').doc('biUDvwQiEXRq5HW6VPlTA1gWQXZ2')
-  .get().then((DocumentSnapshot doc){
-    print('I entered get then');
-    final data = doc.data() as Map<String, dynamic> ;
+    DocumentSnapshot data  = await firestore
+    .collection('users')
+    .doc(token)
+    .get()
+    .catchError((onError){
+      print('this error is from catch error'+ onError.toString());
+    });
+     print(data.data());
     nom = data['nom'];
      print('nom:$nom');
     print('ID nom :$token');
-   } 
-  );
-  return nom;
-}
+
+     return nom;
+  } 
+ 
+  //   final  prefs = await SharedPreferences.getInstance()  ;  
+  // final name = prefs.getString('name');
+  // return name ;
+
 
  int? groupValue_5 = 0;
   bool click= true;
@@ -52,19 +76,21 @@ class _BienvenueState extends State<Bienvenue> {
 
   @override
   Widget build(BuildContext context) {
-     DocumentReference userref = FirebaseFirestore.instance.collection("users").doc('biUDvwQiEXRq5HW6VPlTA1gWQXZ2');
-     GetName().then((value){
-       print('!!!!!!!!!!!!!!!!!!!!!!!!!!');
-       print(value);
-       print('!!!!!!!!!!!!!!!!!!!!!!!!!!');
-     }).catchError((onError){
-       print('0000000000000000000');
-       print(onError.toString());
-       print('0000000000000000000');
-     }
+    // late String name = 'Salim';
+    //  DocumentReference userref = FirebaseFirestore.instance.collection("users").doc('biUDvwQiEXRq5HW6VPlTA1gWQXZ2');
+    //  GetName().then((value){
+    //    print('!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    //    print(value);
+    //    name= value;
+    //    print('nommmmmmmmmm $name');
+    //    print('!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    //  }).catchError((onError){
+    //    print('0000000000000000000');
+    //    print(onError.toString());
+    //    print('0000000000000000000');
+    //  }
      
-     );
-     
+    //  );
 
     return   Scaffold(
       extendBodyBehindAppBar: true,
@@ -156,75 +182,28 @@ class _BienvenueState extends State<Bienvenue> {
                     const SizedBox(height: 250),
                     Title(
                       color: Colors.blueAccent,
-                     child: Text(
-                           '\tBienvenue \n \t\t\t $value',
+                     child: FutureBuilder <String?> (
+                       future: GetName(),
+                       builder: (context, snapshot) {
+                          if( snapshot.hasData ){
+                          String name = snapshot.data!;
+                          return Text(
+                           '\tBienvenue \n \t\t\t $name',
                             style:  const TextStyle(
                               fontFamily: 'FredokaOne',
                               fontSize: 49, 
                               color:  Color( 0xff010158), 
                             ),
-                          ),
-                    //   FutureBuilder <String?> (
-                    //    future: GetName(),
-                    //    builder: (context, snapshot) {
-                    //       if( snapshot.hasData ){
-                    //       String name = snapshot.data!;
-                    //       print(' freaking name $name');
-                    //       print('Hhhhhhhh Its a joke');
-                    //       return Text(
-                    //        '\tBienvenue \n \t\t\t $name',
-                    //         style:  const TextStyle(
-                    //           fontFamily: 'FredokaOne',
-                    //           fontSize: 49, 
-                    //           color:  Color( 0xff010158), 
-                    //         ),
-                    //       );
-                    //     }
-                    //     if(snapshot.hasError){
-                    //       return Text('error');
-                    //     }
-                    //         return Text('Loading...');
-                        
-                        
-                    //    },
-                    //  ),
-                    //  FutureBuilder(
-                    //    future: fetch(context),
-                    //    builder:(context, snapshot){
-                    //      if(snapshot.hasData){
-                    //         return ListView.builder(
-                    //           itemCount: 1,
-                    //           shrinkWrap:true,
-                    //           itemBuilder: (BuildContext context , int index){
-                    //             User user = snapshot.data![index];
-                    //             return Text(
-                    //        '\tBienvenue \n \t\t\t ${user.nom}',
-                    //         style:  const TextStyle(
-                    //           fontFamily: 'FredokaOne',
-                    //           fontSize: 49, 
-                    //           color:  Color( 0xff010158), 
-                    //         ),
-                    //        );
-                    //      },
-
-
-                    //    );
-                    //   }
-                    //      return const CircularProgressIndicator();
-                    //    },
-                    //  ),
-                    
-             
-                    //    },
-                    //  ),
-                    // Text(
-                    //      '\tBienvenue \n \t\t\t $GetName()',
-                    //     style:  const TextStyle(
-                    //         fontFamily: 'FredokaOne',
-                    //         fontSize: 49, 
-                    //         color:  Color( 0xff010158), 
-                    //       ),
-                    //   )
+                          );
+                        }
+                        if(snapshot.hasError){
+                          return Text('error');
+                       
+                         }
+                          return Text('Loading...');
+                       },
+                     ),
+                  
                     ),
                   ],
                 ),

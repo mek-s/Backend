@@ -5,18 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:fradio_nullsafety/fradio_nullsafety.dart';
 import 'package:hummy/pages/espaceParent.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hummy/pages/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hummy/pages/Avatars.dart';
-import 'package:hummy/pages/dejeuner.dart';
-import 'package:hummy/pages/diner.dart';
-import 'package:hummy/pages/petitdejeuner.dart';
-import 'package:hummy/pages/questDej.dart';
-import 'package:hummy/pages/questDin.dart';
-import 'package:hummy/pages/questPd.dart';
+// import 'package:hummy/pages/dejeuner.dart';
+// import 'package:hummy/pages/diner.dart';
+// import 'package:hummy/pages/petitdejeuner.dart';
 //import 'package:hummy/pages/bienvenue.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:hummy/pages/principal.dart';
 
 class Themes extends StatefulWidget {
   const Themes({Key? key}) : super(key: key);
@@ -46,21 +43,27 @@ class _ThemesState extends State<Themes> {
   }
   // ignore: non_constant_identifier_names
   Future<String> GetAvatar() async {
-    //'biUDvwQiEXRq5HW6VPlTA1gWQXZ2'
-   String avatar ='';
-  final prefs = await  SharedPreferences.getInstance();
+  late String avatar ='' ;
+  final  prefs = await SharedPreferences.getInstance()  ;
   final token = prefs.getString('userID');
+ 
   final firestore = FirebaseFirestore.instance;
-  firestore.collection('users').doc(token)
-  .get().then((DocumentSnapshot doc){
-    final data = doc.data() as Map<String, dynamic> ;
+    DocumentSnapshot data  = await firestore
+    .collection('users')
+    .doc(token)
+    .get()
+    .catchError((onError){
+      print('this error is from catch error'+ onError.toString());
+    });
+     print(data.data());
     avatar = data['avatar'];
-    // print('avatar :$avatar');
-    print(doc.toString());
-    // print('ID :$token');
-  } );
-  return avatar;
-}
+     print('nom:$avatar');
+    print('ID nom :$token');
+
+     return avatar;
+ }
+
+
 
 
 
@@ -97,8 +100,7 @@ class _ThemesState extends State<Themes> {
 
               });
             },
-            // hoverChild: Image.asset(GetAvatar().toString(), width: 75),
-            // selectedChild: Image.asset(GetAvatar().toString(), width: 75),
+           
             hasSpace: false,
             toggleable: true,
             selectedColor: const Color(0xffffc900),
@@ -116,7 +118,7 @@ class _ThemesState extends State<Themes> {
                     return Text('error');
                   }
               
-               return Image.asset("assets/img/img_19.png", width: 75);
+                return Image.asset("assets/img/img_19.png", width: 75);
                 
               },
             ),
@@ -224,8 +226,8 @@ class _ThemesState extends State<Themes> {
                             ElevatedButton(onPressed: (){if (kDebugMode) {
                               Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => PetitDejeuner()));
-
+                                  MaterialPageRoute(builder: (context) => Principal() ));
+//PetitDejeuner()
                             }},
                               style:
 
@@ -253,7 +255,7 @@ class _ThemesState extends State<Themes> {
                           ElevatedButton(onPressed: (){if (kDebugMode) {
                          Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => Dejeuner()));
+                                  MaterialPageRoute(builder: (context) => Principal()));
                           }},
                             style:
 
@@ -281,7 +283,7 @@ class _ThemesState extends State<Themes> {
                           ElevatedButton(onPressed: (){if (kDebugMode) {
                          Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => Diner()));
+                                  MaterialPageRoute(builder: (context) => Principal()));
                           }},
 
                             style:
